@@ -1,0 +1,38 @@
+marketplace
+imageEntities
+sellerInfo
+productUrl
+customerRatingImage
+addToCartUrl
+shippingPassEligible
+freeShippingOver50Dollars
+affiliateAddToCartUrl
+mediumImage
+productTrackingUrl
+stock
+giftOptions
+largeImage
+parentItemId
+thumbnailImage
+bundle
+longDescription
+standardShipRate
+categoryPath
+categoryNode
+offerType
+upc
+modelNumber
+salePrice
+availableOnline
+msrp
+
+# python code
+keys = []
+for i in range(len(data["items"])):
+	for key in data["items"][i].keys():
+		if key not in keys:
+			keys.append(key)
+
+names = ["itemId", "name", "shortDescription", "customerRating", "numReviews"]
+for c in list(set(keys) - (set(keys) & set(names))):
+	print c
