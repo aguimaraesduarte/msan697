@@ -18,59 +18,62 @@ with open(input_file_name, 'r') as input_file:
 db_conn = postgres_function.connectdb(dbname, usr_name)
 cursor = postgres_function.db_cursor(db_conn)
 
-#Q3
-# Create DB tables, inventory and items
-table_name = "inventory"
-column_and_type_list = "itemId INTEGER, qty INTEGER"
-postgres_function.create_table(cursor, table_name, column_and_type_list)
+try:
+	#Q3
+	# Create DB tables, inventory and items
+	table_name = "inventory"
+	column_and_type_list = "itemId INTEGER, qty INTEGER"
+	postgres_function.create_table(cursor, table_name, column_and_type_list)
 
-column_list = "itemId, qty"
-for i in range(json_key_value.count_data(data, "items")):
-	values = []
-	try:
-		itemId = str(data['items'][i]['itemId'])
-	except:
-		itemId = "NULL"
-	if itemId == "NULL":
-		qty = "NULL"
-	else:
-		qty = itemId[-2:]
-	
-	values.append(itemId)
-	values.append(qty)
-	
-	postgres_function.insert_into_table(cursor, "inventory", column_list, ", ".join(values))
+	column_list = "itemId, qty"
+	for i in range(json_key_value.count_data(data, "items")):
+		values = []
+		try:
+			itemId = str(data['items'][i]['itemId'])
+		except:
+			itemId = "NULL"
+		if itemId == "NULL":
+			qty = "NULL"
+		else:
+			qty = itemId[-2:]
+		
+		values.append(itemId)
+		values.append(qty)
+		
+		postgres_function.insert_into_table(cursor, "inventory", column_list, ", ".join(values))
 
-print "inventory ok"
+	print "inventory ok"
 
-table_name = "items"
-column_and_type_list = "itemId INTEGER, name VARCHAR, shortDescription TEXT, customerRating REAL, numReviews INTEGER"
-postgres_function.create_table(cursor, table_name, column_and_type_list)
+	table_name = "items"
+	column_and_type_list = "itemId INTEGER, name VARCHAR, shortDescription TEXT, customerRating REAL, numReviews INTEGER"
+	postgres_function.create_table(cursor, table_name, column_and_type_list)
 
-column_list = "itemId, name, shortDescription, customerRating, numReviews"
-for i in range(json_key_value.count_data(data, "items")):
-	values = []
-	try:
-		values.append(str(data['items'][i]['itemId']))
-	except:
-		values.append("NULL")
-	try:
-		values.append("'" + data['items'][i]['name'].replace("'", "''") + "'")
-	except:
-		values.append("NULL")
-	try:
-		values.append("'" + data['items'][i]['shortDescription'].replace("'", "''") + "'")
-	except:
-		values.append("NULL")
-	try:
-		values.append(str(data['items'][i]['customerRating']))
-	except:
-		values.append("NULL")
-	try:
-		values.append(str(data['items'][i]['numReviews']))
-	except:
-		values.append("NULL")
-	postgres_function.insert_into_table(cursor, "items", column_list, ", ".join(values))
+	column_list = "itemId, name, shortDescription, customerRating, numReviews"
+	for i in range(json_key_value.count_data(data, "items")):
+		values = []
+		try:
+			values.append(str(data['items'][i]['itemId']))
+		except:
+			values.append("NULL")
+		try:
+			values.append("'" + data['items'][i]['name'].replace("'", "''") + "'")
+		except:
+			values.append("NULL")
+		try:
+			values.append("'" + data['items'][i]['shortDescription'].replace("'", "''") + "'")
+		except:
+			values.append("NULL")
+		try:
+			values.append(str(data['items'][i]['customerRating']))
+		except:
+			values.append("NULL")
+		try:
+			values.append(str(data['items'][i]['numReviews']))
+		except:
+			values.append("NULL")
+		postgres_function.insert_into_table(cursor, "items", column_list, ", ".join(values))
+except:
+	postgres_function.execute(cursor, "ROLLBACK;")
 
 # Q4
 # Select Data
