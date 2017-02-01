@@ -1,0 +1,29 @@
+Create directories of sh_1, sh_2, sh_3, config_1
+
+mongod --dbpath /data/sharding_sets/sh_1 --port 20006 --shardsvr
+mongod --dbpath /data/sharding_sets/sh_2 --port 20007 --shardsvr
+mongod --dbpath /data/sharding_sets/sh_3 --port 20008 --shardsvr
+
+mongod --dbpath /data/sharding_sets/config_1 --port 20009 --configsvr
+
+mongos --configdb localhost:20009 --chunkSize 1
+
+mongo
+
+use admin
+sh.addShard("localhost:20006")
+sh.addShard("localhost:20007")
+sh.addShard("localhost:20008")
+sh.status()
+
+sh.enableSharding("mydb")
+sh.shardCollection("mydb.friends",{"name":"hashed"})
+
+sh.status()
+
+use mydb
+db.friends.insert({"name":"Diane MK Woodbridge"})
+db.friends.insert({"name":"Yannet Interian"})
+db.friends.insert({"name":"David Uminsky"})
+…
+db.friends.getShardDistribution()

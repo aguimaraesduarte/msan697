@@ -1,0 +1,27 @@
+ccm create -v 3.9 -n 3 test
+ccm list
+ccm status
+#sudo ifconfig lo0 alias 127.0.0.2
+#sudo ifconfig lo0 alias 127.0.0.3
+ccm start
+*If not work,
+   ps auwx | grep cassandra 
+   Sudo kill pid
+ccm status
+ccm node1 show
+ccm node1 cqlsh
+CREATE KEYSPACE test WITH REPLICATION = {'class': 'SimpleStrategy' , 'replication_factor':2};
+USE test;
+CREATE TABLE friend(name text, PRIMARY KEY(name));
+INSERT INTO friend(name) VALUES ('Diane');
+INSERT INTO friend(name) VALUES ('Yannet');
+INSERT INTO friend(name) VALUES ('David');
+INSERT INTO friend(name) VALUES ('Kirsten');
+INSERT INTO friend(name) VALUES ('James');
+INSERT INTO friend(name) VALUES ('Nathaniel');
+INSERT INTO friend(name) VALUES ('Paul');
+SELECT name, token(name) FROM friend;
+ccm node1 ring
+ccm node1 nodetool getendpoints test friend Diane
+ccm node1 nodetool getendpoints test friend Yannet
+ccm node1 nodetool getendpoints test friend David
